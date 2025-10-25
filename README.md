@@ -1,4 +1,4 @@
-# Music-Guessing-Game
+# draingangle.com
 
 This repository hosts the code used for [Drain Gangle](https://draingangle.com/).
 
