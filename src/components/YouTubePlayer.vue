@@ -53,7 +53,7 @@ watch(
   () => gameStore.isRoundOver,
   () => {
     if (!gameStore.isRoundOver) {
-      player.loadVideoById(props.id, 0, 'small')
+      player.loadVideoById(props.id, playerStore.startTime, 'small')
       player.pauseVideo()
     }
   },
@@ -62,12 +62,19 @@ watch(
 const onReady = () => {
   player = youtube.value!
 
-  player.loadVideoById(props.id)
-  player.setVolume(100)
-  player.unMute()
-  player.pauseVideo()
+  player.loadVideoById(props.id, playerStore.startTime, 'small')
+  player.mute()
+  player.playVideo()
 
-  playerStore.setLoadingState(false)
+  setTimeout(() => {
+    player.pauseVideo()
+    player.seekTo(playerStore.startTime, true) // Ensure it's exactly at the start
+    player.unMute()
+    player.setVolume(100)
+    
+    // Now it is safe to let the user click play
+    playerStore.setLoadingState(false)
+  }, 1000)
 }
 
 const nextRound = () => {
