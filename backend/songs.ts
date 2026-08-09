@@ -246,4 +246,18 @@ export default {
   'Area 51': { a: 'B, T', id: '1omW9JR4tTI', d: 205 },
   '2X': { a: 'B, T', id: 'DDaL7KBjkDI', d: 138 },
   Winter: { a: 'B, T', id: 'Zacv0k1OxDY', d: 186 },
+  // Sulfur Surfer
+  'Sulfur Surfer': { a: 'B', id: 'eqXVOIDMvC0', d: 208 },
+  'Versailles Flow': { a: 'B', id: '-diYiitISLQ', d: 218 },
+  'Highland Tyrant': { a: 'B', id: '-Hxrx5uR568', d: 175 },
+  'Dolor': { a: 'B', id: 'qHwsKedTFqo', d: 188 },
+  'Killswitch': { a: 'B', id: 'vjcttn7ug4o', d: 163 },
+  'Fox & Birch': { a: 'B, Current 93', id: 'mhREscMSS58', d: 256 },
+  'Under my Umbrella': { a: 'B', id: 'nKMy03dttqY', d: 187 },
+  'The Dark Mirror': { a: 'B', id: 'ytSIi_92Fzo', d: 251 },
+  'Durins Bane': { a: 'B', id: 'tKqRDTVUhBQ', d: 184 },
+  'Stoner': { a: 'B', id: '949W0iXwsug', d: 200 },
+  'Black Fire': { a: 'B', id: '2Irtjbjhneo', d: 218 },
+  'Blondie': { a: 'B', id: 'tLMFLiazkrA', d: 189 },
+  'Scab': { a: 'B', id: 'lG7aPJgCTR0', d: 366 },
 } as Record<string, { a: string; id: string; d: number }>
