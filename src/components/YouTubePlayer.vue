@@ -1,6 +1,6 @@
 <template>
   <div>
-    <YouTube src="" width="360" height="250" @ready="onReady" ref="youtube" />
+    <YouTube src="" width="360" height="250" @ready="onReady" @state-change="onStateChange" ref="youtube" />
     <button v-if="gameStore.isRoundOver && gameStore.round + 1 >= num_songs" @click="gameStore.isGameOver = true">
       VIEW RESULTS >
     </button>
@@ -24,6 +24,29 @@ const youtube = ref<InstanceType<typeof YouTube> | null>(null)
 
 let player: InstanceType<typeof YouTube>
 let endTimeout: ReturnType<typeof setTimeout> | null = null
+let prebuffering = false
+
+const prebuffer = () => {
+  if (endTimeout) {
+    clearTimeout(endTimeout)
+    endTimeout = null
+  }
+  playerStore.setLoadingState(true)
+  player.mute()
+  player.loadVideoById(props.id, playerStore.startTime, 'small')
+  prebuffering = true
+}
+
+const onStateChange = (e: { data: number }) => {
+  if (prebuffering && e.data === 1 /* YT.PlayerState.PLAYING */) {
+    player.pauseVideo()
+    player.seekTo(playerStore.startTime, true)
+    player.unMute()
+    player.setVolume(100)
+    prebuffering = false
+    playerStore.setLoadingState(false)
+  }
+}
 
 const handlePlaySong = (startTime: number, endDelay?: number) => {
   player.seekTo(startTime, true)
@@ -52,29 +75,13 @@ watch(
 watch(
   () => gameStore.isRoundOver,
   () => {
-    if (!gameStore.isRoundOver) {
-      player.loadVideoById(props.id, playerStore.startTime, 'small')
-      player.pauseVideo()
-    }
+    if (!gameStore.isRoundOver) prebuffer()
   },
 )
 
 const onReady = () => {
   player = youtube.value!
-
-  player.loadVideoById(props.id, playerStore.startTime, 'small')
-  player.mute()
-  player.playVideo()
-
-  setTimeout(() => {
-    player.pauseVideo()
-    player.seekTo(playerStore.startTime, true) // Ensure it's exactly at the start
-    player.unMute()
-    player.setVolume(100)
-    
-    // Now it is safe to let the user click play
-    playerStore.setLoadingState(false)
-  }, 1000)
+  prebuffer()
 }
 
 const nextRound = () => {
@@ -83,6 +90,7 @@ const nextRound = () => {
 
 onBeforeUnmount(() => {
   if (endTimeout) clearTimeout(endTimeout)
+  prebuffering = false
   playerStore.setLoadingState(true)
 })
 </script>
