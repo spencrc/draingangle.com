@@ -30,8 +30,7 @@ if (!playlistId) {
 }
 
 // Get title
-function extractSongTitle(fullTitleObj) {
-  const fullTitle = fullTitleObj?.text ?? "";
+function extractSongTitle(fullTitle) {
   let title = fullTitle;
 
   // Remove things in parentheses
@@ -47,6 +46,15 @@ function extractSongTitle(fullTitleObj) {
   return title;
 }
 
+function parseDuration(badgeText) {
+  if (!badgeText) return 0;
+  const parts = badgeText.split(":").map(Number);
+  if (parts.length === 3) {
+    return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  }
+  return parts[0] * 60 + parts[1];
+}
+
 // Fetch playlist
 try {
   const playlist = await youtube.getPlaylist(playlistId);
@@ -55,9 +63,12 @@ try {
   console.log("-------");
 
   for (const v of playlist.videos) {
-    const title = extractSongTitle(v.title);
+    const title = extractSongTitle(v.metadata.title.text);
+    const id = v.content_id;
+    const badgeText = v.content_image?.overlays?.[0]?.badges?.[0]?.text ?? "0:00";
+    const duration = parseDuration(badgeText);
     console.log(
-      `'${title}': { a: 'PLACEHOLDER', id: '${v.id}', d: ${v.duration.seconds} },`
+      `'${title}': { a: 'PLACEHOLDER', id: '${id}', d: ${duration} },`
     );
   }
 } catch (err) {
